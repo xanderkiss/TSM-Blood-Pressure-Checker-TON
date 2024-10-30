@@ -150,8 +150,8 @@
         let resultClass = "";
 
         // เพิ่มการตรวจสอบค่าขอบเขต
-        if (isNaN(sys) || isNaN(dia) || sys < 30 || sys > 300 || dia < 30 || dia > 200) {
-            alert("กรุณากรอกค่าความดันโลหิตที่อยู่ในช่วงที่ถูกต้อง (SYS 30-300, DIA 30-200 mmHg)");
+        if (isNaN(sys) || isNaN(dia) || sys < 20 || sys > 300 || dia < 20 || dia > 300) {
+            alert("กรุณากรอกค่าความดันโลหิตที่อยู่ในช่วงที่ถูกต้อง (SYS 20-300, DIA 20-300 mmHg)");
             return;
         }
 
