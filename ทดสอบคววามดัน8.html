@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Pressure Checker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+        }
+        .container {
+            text-align: center;
+            width: 350px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+        }
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        input[type="number"]:focus {
+            border-color: #66a6ff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(102, 166, 255, 0.4);
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #66a6ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #4a90e2;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .low {
+            color: #ffffff;
+            background-color: #ff545f;
+        }
+        .normal {
+            color: #1e7e34;
+            background-color: #d4edda;
+        }
+        .elevated {
+            color: #856404;
+            background-color: #fff3cd;
+        }
+        .high {
+            color: #856404;
+            background-color: #ffeeba;
+        }
+        .very-high {
+            color: #721c24;
+            background-color: #f8d7da;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+        }
+        footer p {
+            line-height: 1.5;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- โลโก้ที่เพิ่มเข้ามา -->
+        <img src="logo.png" alt="Logo" class="logo">
+        <h2>ป้อนค่าความดันโลหิต</h2>
+        <div class="input-group">
+            <label for="sys">SYS mmHg:</label>
+            <input type="number" id="sys" placeholder="SYS mmHg">
+        </div>
+        <div class="input-group">
+            <label for="dia">DIA mmHg:</label>
+            <input type="number" id="dia" placeholder="DIA mmHg">
+        </div>
+        <button onclick="checkBloodPressure()">คำนวณ</button>
+        <button onclick="resetFields()" style="background-color: #f44336; margin-top: 10px;">รีเซ็ต</button>
+        <div id="result" class="result" aria-live="polite"></div>
+        
+        <footer>
+            <p>จัดทำโดย นวก.โสตฯ ศุภฤกษ์ เนตรแก้ว<br>โรงพยาบาลสมเด็จพระเจ้าตากสินมหาราช</p>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            checkBloodPressure();
+        }
+    });
+
+    function checkBloodPressure() {
+        const sys = parseInt(document.getElementById("sys").value);
+        const dia = parseInt(document.getElementById("dia").value);
+        let resultText = "";
+        let advice = "";
+        let resultClass = "";
+
+        // เพิ่มการตรวจสอบค่าขอบเขต
+        if (isNaN(sys) || isNaN(dia) || sys < 30 || sys > 300 || dia < 30 || dia > 200) {
+            alert("กรุณากรอกค่าความดันโลหิตที่อยู่ในช่วงที่ถูกต้อง (SYS 30-300, DIA 30-200 mmHg)");
+            return;
+        }
+
+        if (sys < 90 || dia < 60) {
+            resultText = "ความดันโลหิตต่ำ";
+            advice = "หลีกเลี่ยงความเครียดและการเปลี่ยนท่านั่งหรือยืนอย่างรวดเร็ว";
+            resultClass = "low";
+        } else if (sys >= 160 || dia > 100) {
+            resultText = "ความดันโลหิตสูงมาก";
+            advice = "พบแพทย์ด่วน";
+            resultClass = "very-high";
+        } else if (sys >= 140 || dia >= 90) {
+            resultText = "ความดันโลหิตสูง";
+            advice = "พบแพทย์ คุมอาหารและออกกำลังกาย";
+            resultClass = "high";
+        } else if (sys >= 121 || dia >= 80) {
+            resultText = "ความดันโลหิตเริ่มสูง";
+            advice = "คุมอาหารและออกกำลังกาย";
+            resultClass = "elevated";
+        } else {
+            resultText = "ความดันโลหิตปกติ";
+            advice = "เต็มที่กับชีวิต";
+            resultClass = "normal";
+        }
+
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = `<p>${resultText}</p><p>${advice}</p>`;
+        resultDiv.className = `result ${resultClass}`;
+    }
+
+    function resetFields() {
+        document.getElementById("sys").value = "";
+        document.getElementById("dia").value = "";
+        document.getElementById("result").innerHTML = "";
+        document.getElementById("result").className = "result";
+    }
+    </script>
+</body>
+</html>
